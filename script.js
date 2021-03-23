@@ -25,12 +25,9 @@ function addBookToLibrary(book) {
     }
 }
 
-function displayBooks() {
-    let bookIndex = 0;
-    myLibrary.forEach(book => {
+function displayOneBook(book) {
         let content = document.createElement('div');
-        content.classList.add(`book-${bookIndex}`)
-        bookIndex++;
+        // content.classList.add(`book-${bookIndex}`)
 
         let title = document.createElement('p');
         title.textContent = "title: " + book.title;
@@ -53,15 +50,29 @@ function displayBooks() {
         content.appendChild(info);
 
         booksContainer.appendChild(content);
+}
 
-        // console.log(book.title);
-        // return book.title;
+function displayBooks() {
+    myLibrary.forEach(book => {
+        displayOneBook(book);
     })
 }
 
-function newBook(){
-    console.log(btitle.value);
-    console.log(document.getElementById("bread").checked )
+function newBook() {
+    if (btitle.value === "") {
+        return alert("please fill the title");
+    }
+    if (bauthor.value === "") {
+        return alert("please fill the author");
+    }
+    if (bpages.value === "") {
+        return alert("please fill the pages");
+    }
+
+    const read = document.getElementById("bread").checked;
+    const book = new Book(btitle.value, bauthor.value, bpages.value, read);
+    addBookToLibrary(book);
+    displayOneBook(book);
 }
 
 
