@@ -2,11 +2,12 @@
 let myLibrary = [];
 const booksContainer = document.querySelector(".books");
 
-function Book(title, author, pages, read) {
+function Book(title, author, pages, read, index) {
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.read = read;
+    this.index = index;
 
     this.info = function () {
         if (this.read === true) {
@@ -25,36 +26,45 @@ function addBookToLibrary(book) {
     }
 }
 
-function displayOneBook(book) {
-        let content = document.createElement('div');
-        // content.classList.add(`book-${bookIndex}`)
+function displayOneBook(book, index) {
+    let content = document.createElement('div');
+    content.setAttribute('data-index', index);
 
-        let title = document.createElement('p');
-        title.textContent = "title: " + book.title;
-        content.appendChild(title);
+    let title = document.createElement('p');
+    title.textContent = "title: " + book.title;
+    content.appendChild(title);
 
-        let author = document.createElement('p');
-        author.textContent = "author: " + book.author;
-        content.appendChild(author);
+    let author = document.createElement('p');
+    author.textContent = "author: " + book.author;
+    content.appendChild(author);
 
-        let pages = document.createElement('p');
-        pages.textContent = "pages: " + book.pages;
-        content.appendChild(pages);
+    let pages = document.createElement('p');
+    pages.textContent = "pages: " + book.pages;
+    content.appendChild(pages);
 
-        let read = document.createElement('p');
-        read.textContent = "read: " + book.read;
-        content.appendChild(read);
+    let read = document.createElement('p');
+    read.textContent = "read: " + book.read;
+    content.appendChild(read);
 
-        let info = document.createElement('p');
-        info.textContent = "info: " + book.info();
-        content.appendChild(info);
+    let info = document.createElement('p');
+    info.textContent = "info: " + book.info();
+    content.appendChild(info);
 
-        booksContainer.appendChild(content);
+    // <input onclick="newBook()" type="button" value="New Book">
+    let removeButton = document.createElement('input');
+    removeButton.setAttribute('type', 'button');
+    removeButton.setAttribute('value', 'remove');
+    removeButton.setAttribute('onclick', `removeBook(${index})`);
+    content.appendChild(removeButton);
+
+    booksContainer.appendChild(content);
 }
 
 function displayBooks() {
+    let index = 0;
     myLibrary.forEach(book => {
-        displayOneBook(book);
+        displayOneBook(book, index);
+        index++;
     })
 }
 
@@ -65,16 +75,24 @@ function newBook() {
     if (bauthor.value === "") {
         return alert("please fill the author");
     }
-    if (bpages.value === "") {
+    if (bpages.value === "" || bpages < 1) {
         return alert("please fill the pages");
     }
 
     const read = document.getElementById("bread").checked;
-    const book = new Book(btitle.value, bauthor.value, bpages.value, read);
+    const index = myLibrary.length;
+
+    const book = new Book(btitle.value, bauthor.value, bpages.value, read, index);
     addBookToLibrary(book);
-    displayOneBook(book);
+    displayOneBook(book, index);
 }
 
+function removeBook(index) {
+    myLibrary.splice(index, 1);
+    
+    const toRemove = booksContainer.querySelector(`[data-index="${index}"]`)
+    booksContainer.removeChild(toRemove);
+}
 
 const book1 = new Book("some title", "some author", 234, false);
 addBookToLibrary(book1);
