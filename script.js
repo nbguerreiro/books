@@ -59,6 +59,11 @@ function displayBooks() {
     })
 }
 
+function newBook(){
+    console.log(btitle.value);
+    console.log(document.getElementById("bread").checked )
+}
+
 
 const book1 = new Book("some title", "some author", 234, false);
 addBookToLibrary(book1);
