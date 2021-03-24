@@ -9,13 +9,24 @@ function Book(title, author, pages, read, index) {
     this.read = read;
     this.index = index;
 
-    this.info = function () {
-        if (this.read === true) {
-            readTxt = "already read"
-        } else {
-            readTxt = "not read yet"
-        }
-        return `${this.title} by ${this.author}, ${this.pages} pages, ${readTxt}`;
+}
+
+Book.prototype.info = function () {
+    if (this.read === true) {
+        readTxt = "already read"
+    } else {
+        readTxt = "not read yet"
+    }
+    return `${this.title} by ${this.author}, ${this.pages} pages, ${readTxt}`;
+}
+
+Book.prototype.toggleRead = function () {
+    if (this.read === true) {
+        this.read = false;
+        return "OFF";
+    } else {
+        this.read = true;
+        return "ON";
     }
 }
 
@@ -30,26 +41,48 @@ function displayOneBook(book, index) {
     let content = document.createElement('div');
     content.setAttribute('data-index', index);
 
+    // -------------------------------------
     let title = document.createElement('p');
     title.textContent = "title: " + book.title;
     content.appendChild(title);
 
+    // -------------------------------------
     let author = document.createElement('p');
     author.textContent = "author: " + book.author;
     content.appendChild(author);
 
+    // -------------------------------------
     let pages = document.createElement('p');
     pages.textContent = "pages: " + book.pages;
     content.appendChild(pages);
 
-    let read = document.createElement('p');
-    read.textContent = "read: " + book.read;
+    // -------------------------------------
+    let readT = document.createElement('p');
+    readT.textContent = "read: ";
+    content.appendChild(readT);
+
+    let read = document.createElement('input');
+    read.setAttribute('type', 'button');
+
+    let readV = ""
+    if (book.read === true) {
+        readV = "ON"
+    } else {
+        readV = "OFF"
+    }
+    read.setAttribute('value', readV);
+    read.onclick = function () {
+        read.setAttribute('value', `${book.toggleRead()}`);
+    };
     content.appendChild(read);
 
+
+    // -------------------------------------
     let info = document.createElement('p');
     info.textContent = "info: " + book.info();
     content.appendChild(info);
 
+    // -------------------------------------
     // <input onclick="newBook()" type="button" value="New Book">
     let removeButton = document.createElement('input');
     removeButton.setAttribute('type', 'button');
@@ -57,6 +90,7 @@ function displayOneBook(book, index) {
     removeButton.setAttribute('onclick', `removeBook(${index})`);
     content.appendChild(removeButton);
 
+    // -------------------------------------
     booksContainer.appendChild(content);
 }
 
@@ -69,6 +103,8 @@ function displayBooks() {
 }
 
 function newBook() {
+    // https://www.w3schools.com/howto/howto_js_toggle_hide_show.asp
+    //
     if (btitle.value === "") {
         return alert("please fill the title");
     }
@@ -89,10 +125,11 @@ function newBook() {
 
 function removeBook(index) {
     myLibrary.splice(index, 1);
-    
+
     const toRemove = booksContainer.querySelector(`[data-index="${index}"]`)
     booksContainer.removeChild(toRemove);
 }
+
 
 const book1 = new Book("some title", "some author", 234, false);
 addBookToLibrary(book1);
