@@ -1,5 +1,13 @@
 
-let myLibrary = [];
+// let myLibrary = [];
+
+// if (localStorage.getItem('books')) {
+//     console.log(localStorage.getItem('books'));
+//     // myLibrary = JSON.parse(localStorage.getItem('books'));
+// }
+
+let myLibrary = JSON.parse(localStorage.getItem("books") || "[]");
+
 const booksContainer = document.querySelector(".books");
 
 function Book(title, author, pages, read, index) {
@@ -7,8 +15,11 @@ function Book(title, author, pages, read, index) {
     this.author = author;
     this.pages = pages;
     this.read = read;
-    this.index = index;
 
+    if (index === undefined) {
+        index = myLibrary.length;
+    }
+    this.index = index;
 }
 
 Book.prototype.info = function () {
@@ -35,6 +46,8 @@ function addBookToLibrary(book) {
     if (book !== undefined) {
         myLibrary.push(book);
     }
+
+    localStorage.setItem('books', JSON.stringify(myLibrary));
 }
 
 function displayOneBook(book, index) {
@@ -79,7 +92,7 @@ function displayOneBook(book, index) {
 
     // -------------------------------------
     let info = document.createElement('p');
-    info.textContent = "info: " + book.info();
+    // info.textContent = "info: " + book.info();
     content.appendChild(info);
 
     // -------------------------------------
@@ -102,9 +115,16 @@ function displayBooks() {
     })
 }
 
+function newBookToggleForm() {
+    var x = document.getElementById("new-book-display");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+
 function newBook() {
-    // https://www.w3schools.com/howto/howto_js_toggle_hide_show.asp
-    //
     if (btitle.value === "") {
         return alert("please fill the title");
     }
@@ -121,6 +141,8 @@ function newBook() {
     const book = new Book(btitle.value, bauthor.value, bpages.value, read, index);
     addBookToLibrary(book);
     displayOneBook(book, index);
+
+    document.getElementById("newBook").reset();
 }
 
 function removeBook(index) {
@@ -128,12 +150,14 @@ function removeBook(index) {
 
     const toRemove = booksContainer.querySelector(`[data-index="${index}"]`)
     booksContainer.removeChild(toRemove);
+
+    localStorage.setItem('books', JSON.stringify(myLibrary));
 }
 
 
-const book1 = new Book("some title", "some author", 234, false);
-addBookToLibrary(book1);
-const book2 = new Book("some other title", "some other author", 342, true);
-addBookToLibrary(book2);
+// const book1 = new Book("some title", "some author", 234, false);
+// addBookToLibrary(book1);
+// const book2 = new Book("some other title", "some other author", 342, true);
+// addBookToLibrary(book2);
 
 displayBooks();
